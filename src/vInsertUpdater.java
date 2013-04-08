@@ -53,7 +53,7 @@ public class vInsertUpdater {
 
 	/**
 	 * @param args
-	 * @throws IOException 
+	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(new SubstanceGraphiteGlassLookAndFeel());
@@ -115,8 +115,6 @@ public class vInsertUpdater {
 		p.addReference("ant.projectHelper", helper);
 		helper.parse(p, buildFile);
 		p.executeTarget("jar");
-		
-		JAR.delete();
 		
 		if(!LAST_COMMIT_FILE.exists()) LAST_COMMIT_FILE.createNewFile();
 		FileUtils.write(LAST_COMMIT_FILE, getLatestCommit());
