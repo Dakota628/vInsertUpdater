@@ -1,4 +1,5 @@
 //Created by Dakota628
+package org.vinsert.dakota628;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -35,11 +36,11 @@ import org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel;
 
 
 public class vInsertUpdater {
-	public static String GITHUB_USER = "vInsertOfficial";
-	public static String GITHUB_REPO = "vInsert";
+	public static final String GITHUB_USER = "vInsertOfficial";
+	public static final String GITHUB_REPO = "vInsert";
 
-	public static String GITHUB_COMMITS_URL = "https://api.github.com/repos/" + GITHUB_USER +"/" + GITHUB_REPO + "/commits";
-	public static String GITHUB_DOWNLOAD_URL = "https://github.com/" + GITHUB_USER +"/" + GITHUB_REPO + "/archive/master.zip";
+	public static final String GITHUB_COMMITS_URL = "https://api.github.com/repos/" + GITHUB_USER +"/" + GITHUB_REPO + "/commits";
+	public static final String GITHUB_DOWNLOAD_URL = "https://github.com/" + GITHUB_USER +"/" + GITHUB_REPO + "/archive/master.zip";
 
 	public static final File STORAGE_DIR = new File(System.getProperty("user.home") + File.separator + "vInsert" + File.separator + "updater");
 	public static final File REPO_ZIP = new File(STORAGE_DIR,"repo.zip");
