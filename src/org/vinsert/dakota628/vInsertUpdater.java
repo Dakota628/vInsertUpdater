@@ -2,6 +2,7 @@
 package org.vinsert.dakota628;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -17,7 +18,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
@@ -48,9 +51,11 @@ public class vInsertUpdater {
 	public static final File REPO_JAR = new File(STORAGE_DIR,"repo" + File.separator + GITHUB_REPO + "-master" + File.separator + "build" + File.separator + "vinsert.jar");
 	public static final File JAR = new File(STORAGE_DIR,"vinsert.jar");
 	public static final File LAST_COMMIT_FILE = new File(STORAGE_DIR + File.separator + "lastcommit.txt");
-	
+
 	public static JProgressBar pb = new JProgressBar();
 	public static JFrame frame;
+	
+	public static boolean devMode = false;
 
 	/**
 	 * @param args
@@ -61,9 +66,13 @@ public class vInsertUpdater {
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 		
-		SwingUtilities.invokeLater(new Runnable() {
+		final String[] argz = args;
+		
+		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
+				if(argz == null || argz.length < 1) devMode = (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "Would you like to run vInsert in dev mode?", "Run in dev mode?", JOptionPane.YES_NO_OPTION));
+				
 				frame = new JFrame("vInsert Updater");
 				pb.updateUI();
 				pb.setPreferredSize(new Dimension(200, 80));
@@ -79,7 +88,12 @@ public class vInsertUpdater {
 				frame.setVisible(true);
 				frame.setResizable(false);
 			}});
-
+		
+		if(devMode) {
+			args = new String[] {"-dev"};
+			System.out.println("Running in dev mode (-dev).");
+		}
+		
 		if(!STORAGE_DIR.exists()) STORAGE_DIR.mkdirs();
 
 		setStatus("Checking for updates...");
@@ -116,10 +130,10 @@ public class vInsertUpdater {
 		p.addReference("ant.projectHelper", helper);
 		helper.parse(p, buildFile);
 		p.executeTarget("jar");
-		
+
 		if(!LAST_COMMIT_FILE.exists()) LAST_COMMIT_FILE.createNewFile();
 		FileUtils.write(LAST_COMMIT_FILE, getLatestCommit());
-		
+
 		JAR.delete();
 		REPO_JAR.renameTo(JAR);
 		FileUtils.deleteDirectory(REPO_FOLDER);
@@ -129,8 +143,6 @@ public class vInsertUpdater {
 	private static boolean isUpToDate() throws Exception {
 		if(!LAST_COMMIT_FILE.exists() || !JAR.exists()) return false;
 		String last_sha = IOUtils.readLines(new FileInputStream(LAST_COMMIT_FILE)).get(0).trim();
-		System.out.println(last_sha);
-		System.out.println(getLatestCommit());
 		return getLatestCommit().trim().equals(last_sha);
 	}
 
@@ -197,7 +209,7 @@ public class vInsertUpdater {
 				pb.updateUI();
 			}});
 	}
-	
+
 	public static void exitFrame() {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
